@@ -1,5 +1,5 @@
 [package]
-name = "rust-rtqueue"
+name = "rtqueue"
 version = "0.1.0"
 authors = ["dramforever <dramforever@live.com>"]
 edition = "2018"
