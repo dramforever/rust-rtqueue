@@ -15,11 +15,18 @@ fn main() {
             .collect()
     }
 
-    let vheader = parse_line();
-    assert!(vheader.len() == 2);
+    let n;
+    let ty;
 
-    let n = vheader[0];
-    let ty = vheader[1];
+    match parse_line().as_slice() {
+        [ n_, ty_ ] => {
+            n = *n_;
+            ty = *ty_;
+        },
+        x => {
+            panic!("Bad header line {:?}", x);
+        },
+    }
 
     let mut hash: u32 = 0;
 
@@ -32,27 +39,28 @@ fn main() {
     version.push(Queue::new());
 
     for _ in 1 ..= n {
-        let vaction = parse_line();
 
         let h = if ty == 1 { hash } else { 0 };
 
-        if vaction[0] == 1 {
-            assert!(vaction.len() == 3);
-            let v = vaction[1] ^ h;
-            let t = vaction[2] ^ h;
-            version.push(version[v as usize].push_back(t));
-        } else {
-            assert!(vaction[0] == 2);
-            assert!(vaction.len() == 2);
+        match parse_line().as_slice() {
+            [ 1, v, t ] => {
+                let v = v ^ h;
+                let t = t ^ h;
+                version.push(version[v as usize].push_back(t));
+            },
+            [ 2, v ] => {
+                let v = v ^ h;
 
-            let v = vaction[1] ^ h;
+                let (res_queue, res_val) = version[v as usize].pop_front()
+                    .expect("main: queue is empty");
 
-            let (res_queue, res_val) = version[v as usize].pop_front()
-                .expect("main: queue is empty");
+                version.push(res_queue);
 
-            version.push(res_queue);
-
-            hash = hash.wrapping_mul(31).wrapping_add(res_val);
+                hash = hash.wrapping_mul(31).wrapping_add(res_val);
+            },
+            x => {
+                panic!("Bad operation {:?}", x);
+            },
         }
     }
 
