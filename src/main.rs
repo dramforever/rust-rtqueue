@@ -15,18 +15,10 @@ fn main() {
             .collect()
     }
 
-    let n;
-    let ty;
-
-    match parse_line().as_slice() {
-        [ n_, ty_ ] => {
-            n = *n_;
-            ty = *ty_;
-        },
-        x => {
-            panic!("Bad header line {:?}", x);
-        },
-    }
+    let (n, ty) = match parse_line().as_slice() {
+        [ n, ty ] => (*n, *ty),
+        x => panic!("Bad header line {:?}", x),
+    };
 
     let mut hash: u32 = 0;
 
