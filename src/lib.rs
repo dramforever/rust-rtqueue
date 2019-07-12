@@ -67,7 +67,12 @@ impl<T: Clone> Node<T> {
 
 /// A real-time `O(1)` fully persistent FIFO queue.
 ///
-/// Here, 'fully persistent' means that each operation on a queue
+/// **Note**: If you just want a queue data structure, `VecDeque`
+/// from `std` is the way to go. The key here is providing
+/// *persistence*, which is explained below, and is rarely if
+/// ever needed.
+///
+/// 'Fully persistent' means that each operation on a queue
 /// creates a new queue and does not invalidate the original one.
 ///
 /// For example:
