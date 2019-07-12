@@ -2,6 +2,7 @@
 
 use std::cell::{Cell, RefCell};
 use std::fmt;
+use std::iter::FromIterator;
 use std::rc::Rc;
 
 #[derive(Clone)]
@@ -212,6 +213,12 @@ impl<T: Clone> IntoIterator for &'_ Queue<T> {
 
     fn into_iter(self) -> QueueIter<T> {
         QueueIter { dat: self.clone() }
+    }
+}
+
+impl<T: Clone> FromIterator<T> for Queue<T> {
+    fn from_iter<I: IntoIterator<Item=T>>(x: I) -> Queue<T> {
+        x.into_iter().fold(Queue::new(), |q, v| Queue::push_back(&q, v))
     }
 }
 
